@@ -40,13 +40,8 @@ def converter(arquivo,formato):
                 mime = "application/json"    
             else:
                 mime = "application/octet-stream"
-
-            st.download_button(
-                label="Baixar arquivo",
-                data=data,
-                file_name=destino,
-                mime= mime
-            )
+            
+            return mime,destino,data,df
                    
 
 st.title("Bem vindo ao nosso conversor de arquivos")
@@ -55,10 +50,22 @@ formato = st.selectbox("Selecione o formato que deseja converter o arquivo",['CS
 arquivo = st.file_uploader("Coloque aqui o arquivo que deseja converter")
 
 
-if st.button("Converter"):
+if st.button('Converter'):
     if arquivo and formato:
-        converter(arquivo,formato)
-                
+       try: 
+            mime,destino,data,df = converter(arquivo,formato)
+            if mime and destino and data:
+                st.dataframe(df)
+                st.download_button(
+                    label="Baixar arquivo",
+                    data=data,
+                    file_name=destino,
+                    mime= mime
+                )
+        
+       except Exception as e:
+            st.markdown('O arquivo que você colocou não é possíveL ser convertido, tente selecionar um arquivo tipo : **(CSV,JSON,PARQUET,XLSX)**')   
+            
 
  
     
